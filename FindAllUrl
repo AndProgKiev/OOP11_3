@@ -1,0 +1,87 @@
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class FindAllUrl {
+    private Set <String> urlList=new HashSet<>();
+    private String site;
+
+    public FindAllUrl() {
+    }
+
+    public Set<String> getUrlList() {
+        return urlList;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+
+
+    public void getStringUrl() throws IOException{
+        String urlName="";
+        int  index;
+        char[] arrChar;
+
+        String result="";
+        URL url=new URL(site);
+        HttpURLConnection con=(HttpURLConnection) url.openConnection();
+        try (InputStream is=con.getInputStream()){
+           BufferedReader reader=new BufferedReader(new InputStreamReader(is,"UTF-8"));
+            String temp="";
+
+            while ((temp=reader.readLine())!=null){
+                    if (temp.contains("a href=\"https:")) {
+
+
+                        arrChar = temp.toCharArray();
+                        index = temp.indexOf("a href=\"https:"); //шукаємо індекс де знакодиться тег
+
+                        for (int i = index + 8; i < arrChar.length; i++) { //читаємо посилання до знаку - "
+                            if (arrChar[i] == '"') {
+                                break;
+                            } else {
+                                urlName += arrChar[i];
+                            }
+
+                        }
+
+                        urlList.add(urlName);
+                        urlName="";
+                    }
+
+            }
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void writeTofile(String pathName)throws IOException {
+        try (PrintWriter printWriter=new PrintWriter(new FileOutputStream(pathName))){
+             for (String url:urlList){
+                printWriter.println(url);
+             }
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "FindAllUrl{" +
+                "urlList=" + urlList +
+                '}';
+    }
+}
