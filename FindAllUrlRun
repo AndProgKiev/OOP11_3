@@ -1,0 +1,24 @@
+import java.io.IOException;
+
+public class FindAllUrlRun {
+    public static void main(String[] args) {
+        FindAllUrl findAllUrl=new FindAllUrl();
+        findAllUrl.setSite("https://prog.kiev.ua/");
+
+        try {
+        findAllUrl.getStringUrl(); //шукаємо всі посилання на сторінці
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+   System.out.println(findAllUrl.getUrlList());    //виводимо список посилань
+
+        try {
+            findAllUrl.writeTofile("URL.txt"); // записуємо посилання в файл
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+}
